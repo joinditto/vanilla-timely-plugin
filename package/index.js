@@ -4,7 +4,6 @@ function openModal() {
     footer: false,
     stickyFooter: false,
     closeMethods: ["button"], //"overlay", "button", "escape"
-    closeLabel: "Close",
     onOpen: function () {
       console.log("modal open");
     },
@@ -19,11 +18,9 @@ function openModal() {
   });
 
   // set content
-  // modal.setContent(
-  //   `<iframe style="width: 100%;height:100%;" src="https://test-timely.joinditto.in/event/test/book?hotline=True"></iframe>`
-  // );
-
-  modal.setContent("<h1>some content here");
+  modal.setContent(
+    `<iframe style="width: 100%;height:100%;border:none" src="https://test-timely.joinditto.in/event/test/book?hotline=True"></iframe>`
+  );
 
   modal.open();
 }

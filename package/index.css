@@ -1,4 +1,33 @@
+.tingle-modal {
+  background-color: rgba(31, 31, 31, 0.4) !important;
+  backdrop-filter: none !important;
+}
+
+.tingle-modal-box {
+  height: 500px !important;
+  width: 800px !important;
+}
+
+.tingle-modal-box__content {
+  padding: 0px !important;
+  height: 100% !important;
+}
+
+@media (max-width: 800px) {
+  .tingle-modal-box {
+    width: 100% !important;
+    margin-bottom: inherit !important;
+  }
+}
+
 @media (max-width: 540px) {
+  .tingle-modal-box {
+    width: 100% !important;
+    margin-bottom: inherit !important;
+  }
+}
+
+/* @media (max-width: 800px) {
   .tingle-modal {
     top: 0px;
     display: block;
@@ -9,6 +38,7 @@
   .tingle-modal-box {
     width: auto;
     border-radius: 0;
+    height: 100vh;
   }
 
   .tingle-modal-box__content {
@@ -59,4 +89,4 @@
     vertical-align: middle;
     font-size: 0;
   }
-}
+} */
