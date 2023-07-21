@@ -16,12 +16,12 @@ const cssStyles = `
   top: 0% !important;
   left: 0% !important;
   z-index: 999999999 !important;
-  width: 100vw !important;
+  width: 100% !important;
   height: 100vh !important;
 }
 
 .tingle-modal-box {
-  margin-top:25px;
+  margin-top:80px;
   display: flex;
   justify-content: center;
   width: 100% !important;
@@ -30,8 +30,19 @@ const cssStyles = `
 
 .tingle-modal-box__content {
   padding: 0px !important;
-  height:500px !important;
   width:800px !important
+}
+
+.tingle-enabled{
+  overflow:hidden
+}
+
+.tingle-modal__close{
+  width:30px;
+  float:right;
+  position: relative;
+  right: 2%;
+  top: 2%;
 }
 
 .tingle-modal__closeLabel {
