@@ -1,3 +1,5 @@
+import Tingle from "tingle.js";
+
 //Function dynamically add the required CSS for the modal to the HEAD tag
 function addStylesToHead(css) {
   const styleElement = document.createElement("style");
@@ -61,8 +63,8 @@ const cssStyles = `
 addStylesToHead(cssStyles);
 
 // Function to open the modal
-function openModal() {
-  var modal = new tingle.modal({
+export function openModal() {
+  var modal = new Tingle.modal({
     footer: false,
     stickyFooter: false,
     closeMethods: ["button"], //"overlay", "button", "escape"
@@ -86,7 +88,3 @@ function openModal() {
 
   modal.open();
 }
-
-// Add event listener to the button
-const openModalButton = document.getElementById("openModalButton");
-openModalButton.addEventListener("click", openModal);
