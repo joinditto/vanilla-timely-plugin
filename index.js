@@ -12,17 +12,32 @@ const cssStyles = `
 .tingle-modal {
   background-color: rgba(31, 31, 31, 0.4) !important;
   backdrop-filter: none !important;
+  position:absolute !important;
+  top: 0% !important;
+  left: 0% !important;
+  z-index: 999999999 !important;
+  width: 100vw !important;
+  height: 100vh !important;
 }
 
 .tingle-modal-box {
-  height: 500px !important;
-  width: 800px !important;
+  margin-top:25px;
+  display: flex;
+  justify-content: center;
+  width: 100% !important;
+  height:100% !important
 }
 
 .tingle-modal-box__content {
   padding: 0px !important;
-  height: 100% !important;
+  height:500px !important;
+  width:800px !important
 }
+
+.tingle-modal__closeLabel {
+  display: none !important;
+}
+
 
 @media (max-width: 800px) {
   .tingle-modal-box {
@@ -62,29 +77,29 @@ const cssStyles = `
 
 addStylesToHead(cssStyles);
 
+var modal = new Tingle.modal({
+  footer: false,
+  stickyFooter: false,
+  closeMethods: ["button"], //"overlay", "button", "escape"
+  onOpen: function () {
+    console.log("modal open");
+  },
+  onClose: function () {
+    console.log("modal closed");
+  },
+  beforeClose: function () {
+    // here's goes some logic
+    // e.g. save content before closing the modal
+    return true; // close the modal
+  },
+});
+
+// set content
+modal.setContent(
+  `<iframe style="width: 100%;height:100%;border:none" src="https://test-timely.joinditto.in/event/test/book?hotline=True"></iframe>`
+);
+
 // Function to open the modal
 export function openModal() {
-  var modal = new Tingle.modal({
-    footer: false,
-    stickyFooter: false,
-    closeMethods: ["button"], //"overlay", "button", "escape"
-    onOpen: function () {
-      console.log("modal open");
-    },
-    onClose: function () {
-      console.log("modal closed");
-    },
-    beforeClose: function () {
-      // here's goes some logic
-      // e.g. save content before closing the modal
-      return true; // close the modal
-    },
-  });
-
-  // set content
-  modal.setContent(
-    `<iframe style="width: 100%;height:100%;border:none" src="https://test-timely.joinditto.in/event/test/book?hotline=True"></iframe>`
-  );
-
   modal.open();
 }
