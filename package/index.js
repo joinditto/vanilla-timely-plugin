@@ -87,12 +87,6 @@ function openModal() {
   modal.open();
 }
 
-function addStylesToHead(css) {
-  const styleElement = document.createElement("style");
-  styleElement.textContent = css;
-  document.head.appendChild(styleElement);
-}
-
 // Add event listener to the button
 const openModalButton = document.getElementById("openModalButton");
 openModalButton.addEventListener("click", openModal);
