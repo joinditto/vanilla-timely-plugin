@@ -11,7 +11,7 @@ const cssStyles = `
 /* Your CSS styles go here */
 .tingle-modal {
   background-color: rgba(31, 31, 31, 0.4) !important;
-  backdrop-filter: none !important;
+  backdrop-filter: blur(1px) !important;
   position:absolute !important;
   top: 0% !important;
   left: 0% !important;
@@ -21,7 +21,7 @@ const cssStyles = `
 }
 
 .tingle-modal-box {
-  margin-top:80px;
+  margin-top:100px;
   display: flex;
   justify-content: center;
   width: 100% !important;
@@ -55,7 +55,9 @@ const cssStyles = `
   .tingle-modal-box {
     width: 100% !important;
     margin-bottom: inherit !important;
-    height: 725px !important;
+    height: 695px !important;
+    position: absolute;
+    bottom: 0px;
   }
 }
 
