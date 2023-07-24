@@ -81,21 +81,15 @@ const cssStyles = `
 
 addStylesToHead(cssStyles);
 
-var modal = new Tingle.modal({
+const modal = new Tingle.modal({
   footer: false,
   stickyFooter: false,
   closeMethods: ["button"], //"overlay", "button", "escape"
-  onOpen: function () {
-    console.log("modal open");
-  },
-  onClose: function () {
-    console.log("modal closed");
-  },
-  beforeClose: function () {
-    // here's goes some logic
-    // e.g. save content before closing the modal
-    return true; // close the modal
-  },
+  //onOpen: function () {},
+  //onClose: function () {},
+  // beforeClose: function () {
+  //   return true; // close the modal
+  // },
 });
 
 // set content
