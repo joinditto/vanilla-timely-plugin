@@ -43,6 +43,7 @@ const cssStyles = `
   position: relative;
   right: 2%;
   top: 2%;
+  color:white !important
 }
 
 .tingle-modal__closeLabel {
@@ -64,24 +65,14 @@ const cssStyles = `
   }
 }
 
+.tingle-modal__close svg * {
+  fill: currentColor;
+}
+
 @media (max-width: 540px) {
   .tingle-modal {
-    top: auto !important;
-    height: 100% !important;
-    display: flex !important;
-  }
-
-  .tingle-modal__close {
-    background: transparent !important;
-    right: 1px !important;
-    display: flex !important;
-    justify-content: end;
-    margin-top: 15px !important;
-  }
-
-  .tingle-modal__closeLabel {
-    display: none !important;
-  }
+    bottom:0px !important
+  }  
 }
 
 `;
