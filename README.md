@@ -10,9 +10,4 @@ The 'openDittoTimely' function takes 2 parameters.
 
 2.params is an optional field which is an object which is used to send the utm_params and other params.
 
-import {openDittoTimely} from 'vanilla-timely-plugin';
-
-<button onclick="openDittoTimely('test',{'campaign':'new-campaign})">
-
-</button>
 
