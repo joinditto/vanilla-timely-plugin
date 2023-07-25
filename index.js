@@ -43,7 +43,10 @@ const cssStyles = `
   position: relative;
   right: 2%;
   top: 2%;
-  color:white !important
+  color:white !important;
+  background: transparent;
+  border: none;
+  cursor:pointer;
 }
 
 .tingle-modal__closeLabel {
@@ -94,29 +97,26 @@ const modal = new Tingle.modal({
 
 // Function to open the modal
 export function openDittoTimely(eventName, params = {}) {
-  return () => {
-    console.log("caled");
-    const timelyUrl = `https://test-timely.joinditto.in/event/${eventName}/book`;
+  const timelyUrl = `https://test-timely.joinditto.in/event/${eventName}/book`;
 
-    // Convert params object into URL query parameters
-    const utmParamsString = Object.entries(params)
-      .map(
-        ([key, value]) =>
-          `${encodeURIComponent(key)}=${encodeURIComponent(value)}`
-      )
-      .join("&");
+  // Convert params object into URL query parameters
+  const utmParamsString = Object.entries(params)
+    .map(
+      ([key, value]) =>
+        `${encodeURIComponent(key)}=${encodeURIComponent(value)}`
+    )
+    .join("&");
 
-    const timelyUrlWithParams = utmParamsString
-      ? `${timelyUrl}&${utmParamsString}`
-      : timelyUrl;
+  const timelyUrlWithParams = utmParamsString
+    ? `${timelyUrl}&${utmParamsString}`
+    : timelyUrl;
 
-    // set content
-    modal.setContent(
-      `<iframe style="width: 100%;height:100%;border:none" src="${timelyUrlWithParams}"></iframe>`
-    );
+  // set content
+  modal.setContent(
+    `<iframe style="width: 100%;height:100%;border:none" src="${timelyUrlWithParams}"></iframe>`
+  );
 
-    modal.open();
-  };
+  modal.open();
 }
 
 // Function to close the modal
