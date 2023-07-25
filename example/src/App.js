@@ -11,7 +11,7 @@ function App() {
       }}
     >
       <button onClick={() => openDittoTimely("test")}>
-        Click her to open Ditto Timely Modal
+        Click here to open Ditto Timely Modal
       </button>
     </div>
   );
