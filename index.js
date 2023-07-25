@@ -92,12 +92,34 @@ const modal = new Tingle.modal({
   // },
 });
 
-// set content
-modal.setContent(
-  `<iframe style="width: 100%;height:100%;border:none" src="https://test-timely.joinditto.in/event/test/book?hotline=True"></iframe>`
-);
-
 // Function to open the modal
-export function openModal() {
-  modal.open();
+export function openDittoTimely(eventName, params = {}) {
+  return () => {
+    console.log("caled");
+    const timelyUrl = `https://test-timely.joinditto.in/event/${eventName}/book`;
+
+    // Convert params object into URL query parameters
+    const utmParamsString = Object.entries(params)
+      .map(
+        ([key, value]) =>
+          `${encodeURIComponent(key)}=${encodeURIComponent(value)}`
+      )
+      .join("&");
+
+    const timelyUrlWithParams = utmParamsString
+      ? `${timelyUrl}&${utmParamsString}`
+      : timelyUrl;
+
+    // set content
+    modal.setContent(
+      `<iframe style="width: 100%;height:100%;border:none" src="${timelyUrlWithParams}"></iframe>`
+    );
+
+    modal.open();
+  };
+}
+
+// Function to close the modal
+export function closeDittoTimely() {
+  modal.close();
 }

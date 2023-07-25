@@ -1,20 +1,14 @@
 {
   "name": "vanilla-timely-plugin",
   "version": "1.0.0",
-  "description": "Timely Modal plugin",
+  "description": "Load Vanilla JS Timely Modal plugin from any site",
+  "author": "joinditto",
+  "license": "MIT",
+  "repository": "/vanilla-timely-plugin",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/joinditto/vanilla-timely-plugin.git"
-  },
-  "keywords": [
-    "Timely"
-  ],
-  "author": "joinditto",
-  "license": "ISC",
   "bugs": {
     "url": "https://github.com/joinditto/vanilla-timely-plugin/issues"
   },
