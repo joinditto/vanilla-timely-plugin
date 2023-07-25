@@ -12,7 +12,7 @@ The 'openDittoTimely' function takes 2 parameters.
 
 import {openDittoTimely} from 'vanilla-timely-plugin';
 
-`<button onclick="openDittoTimely('test',{'campaign':'new-campaign})">
+<button onclick="openDittoTimely('test',{'campaign':'new-campaign})">
 
 </button>
-`
+
