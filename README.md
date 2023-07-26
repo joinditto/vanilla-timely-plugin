@@ -19,7 +19,8 @@ npm install vanilla-timely-plugin
 ```
 
 Now import the 2 functions "openDittoTimely" and "closeDittoTimely".
-While calling "openDittoTimely" pass the eventName as the first param (Mandatory) and the second param can be used to pass the utm_params (Optional)
+While calling "openDittoTimely" pass the eventName as the first param (mandatory) and the second param can be used to pass the utm_params (optional).
+"closeDittoTimely" needs no parameters.
 
 ```
 import { openDittoTimely,closeDittoTimely } from 'vanilla-timely-plugin';
