@@ -103,11 +103,15 @@ const modal = new Tingle.modal({
 });
 
 // Function to open the modal
-export function openDittoTimely(server, eventName, params = {}) {
+export function openDittoTimely(eventName, params = {}, env = "prod") {
+  if (!eventName) {
+    console.error("Event Name is not available");
+  }
+
   const timelyUrlStaging = `https://test-timely.joinditto.in/event/${eventName}/book`;
   const timelyUrlProd = `https://timely.joinditto.in/event/${eventName}/book`;
 
-  const timelyUrl = server === "prod" ? timelyUrlProd : timelyUrlStaging;
+  const timelyUrl = env === "prod" ? timelyUrlProd : timelyUrlStaging;
 
   // Convert params object into URL query parameters
   const utmParamsString = Object.entries(params)
