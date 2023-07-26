@@ -1,0 +1,16 @@
+{
+  "name": "Ditto Timely Example",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Example for Ditto timely",
+  "author": "joinditto",
+  "license": "MIT",
+  "repository": "",
+  "main": "index.js",
+  "dependencies": {
+    "vanilla-timely-plugin": "file:.."
+  },
+  "devDependencies": {
+    "parcel-bundler": "^1.12.5"
+  }
+}

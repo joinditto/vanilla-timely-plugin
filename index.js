@@ -118,7 +118,7 @@ export function openDittoTimely(server, eventName, params = {}) {
     .join("&");
 
   const timelyUrlWithParams = utmParamsString
-    ? `${timelyUrl}&${utmParamsString}`
+    ? `${timelyUrl}?${utmParamsString}`
     : timelyUrl;
 
   // set content
