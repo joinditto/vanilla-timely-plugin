@@ -6,9 +6,11 @@ There is also a function 'closeDittoTimely' to close the modal.
 
 The 'openDittoTimely' function takes 2 parameters.
 
-1."eventName" param which is mandatory is used to send the name of the timely event.It would be a string value.
+1."server" param which is mandatory is used specify the timely server (prod/staging).It would be a string value.The values can be either "prod" or "staging".
 
-2."params" is an optional field which is an object which is used to send the utm_params and other params.
+2."eventName" param which is mandatory is used to send the name of the timely event.It would be a string value.
+
+3."params" is an optional field which is an object which is used to send the utm_params and other params.
 
 ## How to use
 
@@ -27,7 +29,7 @@ import { openDittoTimely,closeDittoTimely } from 'vanilla-timely-plugin';
 
 return (
 
-<button onClick={() => openDittoTimely("test",{"campaign":"influencer-z"}) }>
+<button onClick={() => openDittoTimely("staging","test",{"campaign":"influencer-z"}) }>
 
 </button>
 

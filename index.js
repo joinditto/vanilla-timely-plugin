@@ -90,16 +90,16 @@ const modal = new Tingle.modal({
   closeMethods: ["button"], //"overlay", "button", "escape"
   //onOpen: function () {},
   //onClose: function () {},
-  // beforeClose: function () {
-  //   const timelyIframe = window?.document?.getElementById("timely-iframe");
+  beforeClose: function () {
+    const timelyIframe = window?.document?.getElementById("timely-iframe");
 
-  //   if (timelyIframe) {
-  //     timelyIframe.contentWindow?.postMessage(
-  //       { from: "react-timely", action: "close" },
-  //       "*"
-  //     );
-  //   }
-  // },
+    if (timelyIframe) {
+      timelyIframe.contentWindow?.postMessage(
+        { from: "react-timely", action: "close" },
+        "*"
+      );
+    }
+  },
 });
 
 // Function to open the modal
@@ -123,10 +123,11 @@ export function openDittoTimely(server, eventName, params = {}) {
 
   // set content
   modal.setContent(
-    `<iframe style="width: 100%;height:100%;border:none;" src="${timelyUrlWithParams}"></iframe>`
+    `<iframe id="timely-iframe" style="width: 100%;height:100%;border:none;" src="${timelyUrlWithParams}"></iframe>`
   );
 
   modal.open();
+  window.addEventListener("message", handleMessage, false);
 }
 
 // Function to close the modal
