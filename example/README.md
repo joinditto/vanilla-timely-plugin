@@ -6,7 +6,7 @@ First go to the vanilla timely plugin folder and install the packages required.
 npm install
 ```
 
-No go to the example folder and install the packages required.
+Now go to the example folder and install the packages required.
 
 ```
 cd example
