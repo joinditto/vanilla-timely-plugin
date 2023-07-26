@@ -54,7 +54,7 @@ const cssStyles = `
 }
 
 
-@media (max-width: 800px) {
+@media (max-width: 980px) {
   .tingle-modal-box {
     width: 100% !important;
     margin-bottom: inherit !important;
@@ -90,16 +90,16 @@ const modal = new Tingle.modal({
   closeMethods: ["button"], //"overlay", "button", "escape"
   //onOpen: function () {},
   //onClose: function () {},
-  beforeClose: function () {
-    const timelyIframe = window?.document?.getElementById("timely-iframe");
+  // beforeClose: function () {
+  //   const timelyIframe = window?.document?.getElementById("timely-iframe");
 
-    if (timelyIframe) {
-      timelyIframe.contentWindow?.postMessage(
-        { from: "react-timely", action: "close" },
-        "*"
-      );
-    }
-  },
+  //   if (timelyIframe) {
+  //     timelyIframe.contentWindow?.postMessage(
+  //       { from: "react-timely", action: "close" },
+  //       "*"
+  //     );
+  //   }
+  // },
 });
 
 // Function to open the modal
@@ -127,7 +127,7 @@ export function openDittoTimely(server, eventName, params = {}) {
   );
 
   modal.open();
-  window.addEventListener("message", handleMessage, false);
+  //window.addEventListener("message", handleMessage, false);
 }
 
 // Function to close the modal
