@@ -21,7 +21,7 @@ const cssStyles = `
 }
 
 .tingle-modal-box {
-  margin-top:100px;
+  margin-top:25px;
   display: flex;
   justify-content: center;
   width: 100% !important;
@@ -30,7 +30,7 @@ const cssStyles = `
 
 .tingle-modal-box__content {
   padding: 0px !important;
-  width:800px !important
+  width:980px !important
 }
 
 .tingle-enabled{
@@ -64,7 +64,7 @@ const cssStyles = `
   }
 }
 
-@media (max-height: 800px) {
+ @media (max-height: 668px) {
   .tingle-modal-box {
     height: 575px !important;
   }
@@ -91,7 +91,14 @@ const modal = new Tingle.modal({
   //onOpen: function () {},
   //onClose: function () {},
   // beforeClose: function () {
-  //   return true; // close the modal
+  //   const timelyIframe = window?.document?.getElementById("timely-iframe");
+
+  //   if (timelyIframe) {
+  //     timelyIframe.contentWindow?.postMessage(
+  //       { from: "react-timely", action: "close" },
+  //       "*"
+  //     );
+  //   }
   // },
 });
 
@@ -113,7 +120,7 @@ export function openDittoTimely(eventName, params = {}) {
 
   // set content
   modal.setContent(
-    `<iframe style="width: 100%;height:100%;border:none" src="${timelyUrlWithParams}"></iframe>`
+    `<iframe style="width: 100%;height:100%;border:none;" src="${timelyUrlWithParams}"></iframe>`
   );
 
   modal.open();
