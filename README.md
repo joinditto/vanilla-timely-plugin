@@ -13,6 +13,10 @@ The `openTimely` function takes 3 parameters.
 
 2.`params` is an optional field. It is an object, which can be used to send the **utm_params** and any other params which is mutually agreed with Ditto tech team.
 
+3.`env` which is used specify the timely server (prod/staging).It would be a string value.The values can be either **prod** or **staging**. By default it is set to **prod**.
+
+> Make use of staging env to test out timely prior to using production version.
+
 ### closeTimely
 No parameters.
 
@@ -24,10 +28,6 @@ utm_medium
 utm_content
 utm_term
 ```
-
-3.`env` which is used specify the timely server (prod/staging).It would be a string value.The values can be either **prod** or **staging**. By default it is set to **prod**.
-
-> Make use of staging env to test out timely prior to using production version.
 
 ## Installing
 
