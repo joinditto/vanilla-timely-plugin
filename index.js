@@ -123,8 +123,8 @@ async function handleCloseButtonClick() {
     );
   }
 
-  const finalValue = await createMessageListener();
-  if (finalValue) {
+  const closeModal = await createMessageListener();
+  if (closeModal) {
     modal.close();
   }
 }
