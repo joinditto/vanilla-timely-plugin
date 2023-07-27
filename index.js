@@ -126,6 +126,8 @@ async function handleCloseButtonClick() {
   const closeModal = await createMessageListener();
   if (closeModal) {
     modal.close();
+    const closeButton = window.document.getElementById("close-button-timely");
+    closeButton.removeEventListener("click", handleCloseButtonClick);
   }
 }
 
