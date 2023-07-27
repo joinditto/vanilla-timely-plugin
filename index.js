@@ -90,7 +90,7 @@ const cssStyles = `
 
 addStylesToHead(cssStyles);
 
-function createMessageListener() {
+function timelyCreateMessageListener() {
   return new Promise((resolve) => {
     function listener(event) {
       const { data } = event;
@@ -112,7 +112,7 @@ const modal = new Tingle.modal({
   closeMethods: ["button"], //"overlay", "button", "escape"
 });
 
-async function handleCloseButtonClick() {
+async function timelyHandleCloseButtonClick() {
   const timelyIframe = window?.document?.getElementById("timely-iframe");
 
   if (timelyIframe) {
@@ -122,18 +122,19 @@ async function handleCloseButtonClick() {
     );
   }
 
-  const closeModal = await createMessageListener();
+  const closeModal = await timelyCreateMessageListener();
   if (closeModal) {
     modal.close();
     const closeButton = window.document.getElementById("close-button-timely");
-    closeButton.removeEventListener("click", handleCloseButtonClick);
+    closeButton.removeEventListener("click", timelyHandleCloseButtonClick);
   }
 }
 
 // Function to open the modal
-export function openDittoTimely(eventName, params = {}, env = "prod") {
+export function openTimely(eventName, params = {}, env = "prod") {
   if (!eventName) {
-    console.error("Event Name is not available");
+    console.error("vanilla-timely: Event name is not provided.");
+    return;
   }
 
   const timelyUrlStaging = `https://test-timely.joinditto.in/event/${eventName}/book`;
@@ -166,12 +167,12 @@ export function openDittoTimely(eventName, params = {}, env = "prod") {
   );
 
   const closeButton = window.document.getElementById("close-button-timely");
-  closeButton.addEventListener("click", handleCloseButtonClick);
+  closeButton.addEventListener("click", timelyHandleCloseButtonClick);
 
   modal.open();
 }
 
 // Function to close the modal
-export function closeDittoTimely() {
+export function closeTimely() {
   modal.close();
 }
