@@ -9,6 +9,10 @@ function addStylesToHead(css) {
 
 const cssStyles = `
 /* Your CSS styles go here */
+
+.parent-container{
+  height:100vh
+}
 .tingle-modal {
   background-color: rgba(31, 31, 31, 0.4) !important;
   backdrop-filter: blur(1px) !important;
@@ -38,19 +42,22 @@ const cssStyles = `
 }
 
 .tingle-modal__close{
-  width:30px;
-  float:right;
-  position: relative;
-  right: 2%;
-  top: 2%;
-  color:white !important;
-  background: transparent;
-  border: none;
-  cursor:pointer;
+  display: none !important;
 }
 
 .tingle-modal__closeLabel {
   display: none !important;
+}
+
+.custom-close-button-timely{
+  position:fixed;
+  right:0px;
+  top:0px;
+  width:50px;
+  height:50px;
+  background:transparent;
+  border:none;
+  cursor:pointer;
 }
 
 
@@ -84,42 +91,45 @@ const cssStyles = `
 
 addStylesToHead(cssStyles);
 
+function createMessageListener() {
+  return new Promise((resolve) => {
+    function listener(event) {
+      const { data } = event;
+      if (data.from === "timely" && data.action === "confirm-close") {
+        resolve(true);
+      } else {
+        resolve(false);
+      }
+
+      // After receiving a message, we don't need the listener anymore
+      window.removeEventListener("message", listener);
+    }
+
+    window.addEventListener("message", listener);
+  });
+}
+
 const modal = new Tingle.modal({
   footer: false,
   stickyFooter: false,
   closeMethods: ["button"], //"overlay", "button", "escape"
-  beforeClose: function () {
-    const timelyIframe = window?.document?.getElementById("timely-iframe");
-
-    if (timelyIframe) {
-      timelyIframe.contentWindow?.postMessage(
-        { from: "react-timely", action: "close" },
-        "*"
-      );
-    }
-
-    const p = new Promise((resolve, reject) => {
-      window.addEventListener("message", function (event) {
-        const { data } = event;
-        console.log("data", data);
-        if (data.from == "timely" && data.action === "confirm-close") {
-          resolve(true);
-        } else if (data.from == "timely" && data.action === "middle-steps") {
-          resolve(false);
-        }
-      });
-    });
-
-    p.then((a) => {
-      return a;
-    });
-
-    // .catch(() => {
-    //   console.log("inside catch");
-    //   return false;
-    // });
-  },
 });
+
+async function handleCloseButtonClick() {
+  const timelyIframe = window?.document?.getElementById("timely-iframe");
+
+  if (timelyIframe) {
+    timelyIframe.contentWindow?.postMessage(
+      { from: "react-timely", action: "close" },
+      "*"
+    );
+  }
+
+  const finalValue = await createMessageListener();
+  if (finalValue) {
+    modal.close();
+  }
+}
 
 // Function to open the modal
 export function openDittoTimely(eventName, params = {}, env = "prod") {
@@ -127,8 +137,7 @@ export function openDittoTimely(eventName, params = {}, env = "prod") {
     console.error("Event Name is not available");
   }
 
-  const timelyUrlStaging = `http://localhost:3001/event/hotline/book`;
-  // const timelyUrlStaging = `https://test-timely.joinditto.in/event/${eventName}/book`;
+  const timelyUrlStaging = `https://test-timely.joinditto.in/event/${eventName}/book`;
   const timelyUrlProd = `https://timely.joinditto.in/event/${eventName}/book`;
 
   const timelyUrl = env === "prod" ? timelyUrlProd : timelyUrlStaging;
@@ -147,8 +156,18 @@ export function openDittoTimely(eventName, params = {}, env = "prod") {
 
   // set content
   modal.setContent(
-    `<iframe id="timely-iframe" style="width: 100%;height:100%;border:none;" src="${timelyUrlWithParams}"></iframe>`
+    `
+    <div class="parent-container">
+    <button id="close-button-timely" class="custom-close-button-timely">
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 15 15"><path fill="#FFFFFF" fill-rule="evenodd" d="M11.782 4.032a.575.575 0 1 0-.813-.814L7.5 6.687L4.032 3.218a.575.575 0 0 0-.814.814L6.687 7.5l-3.469 3.468a.575.575 0 0 0 .814.814L7.5 8.313l3.469 3.469a.575.575 0 0 0 .813-.814L8.313 7.5l3.469-3.468Z" clip-rule="evenodd"/></svg>
+    </button>
+    <iframe id="timely-iframe" style="width: 100%;height:100%;border:none;" src="${timelyUrlWithParams}"></iframe>
+    <div>
+    `
   );
+
+  const closeButton = window.document.getElementById("close-button-timely");
+  closeButton.addEventListener("click", handleCloseButtonClick);
 
   modal.open();
 }
