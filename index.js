@@ -8,11 +8,10 @@ function addStylesToHead(css) {
 }
 
 const cssStyles = `
-/* Your CSS styles go here */
-
 .parent-container{
   height:100vh
 }
+
 .tingle-modal {
   background-color: rgba(31, 31, 31, 0.4) !important;
   backdrop-filter: blur(1px) !important;
