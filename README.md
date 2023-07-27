@@ -1,39 +1,54 @@
 ## Vanilla JS Timely Modal
 
-We are using Tingle.js for implementing the modal. (https://tingle.robinparisi.com)
+### Features
 
-In the index.js file we have a function 'openDittoTimely' this function is used to open the Ditto Timely Modal.
-To use this function first import it from the package and then call it in the handler function of the html element.
-There is also a function 'closeDittoTimely' to close the modal.
+- Open Ditto's timely modal in any website to book call advisory slots
+- Close the timely modal in case it has to be closed programmatically
 
-The 'openDittoTimely' function takes 2 parameters.
+### openTimely
 
-1."eventName" param which is mandatory is used to send the name of the timely event.It would be a string value.
+The `openTimely` function takes 3 parameters.
 
-2."params" is an optional field which is an object which is used to send the utm_params and other params.
+1.`eventName` which is mandatory is used to send the name of the timely event. It would be a string value.
 
-3."env" param which is used specify the timely server (prod/staging).It would be a string value.The values can be either "prod" or "staging".
+2.`params` is an optional field. It is an object, which can be used to send the **utm_params** and any other params which is mutually agreed with Ditto tech team.
 
-## How to use
+### closeTimely
+No parameters.
 
-First install the vanilla-timely-plugin using npm.
+#### Supported utm_params
+```
+utm_source
+utm_campaign
+utm_medium
+utm_content
+utm_term
+```
+
+3.`env` which is used specify the timely server (prod/staging).It would be a string value.The values can be either **prod** or **staging**. By default it is set to **prod**.
+
+> Make use of staging env to test out timely prior to using production version.
+
+## Installing
 
 ```
 npm install vanilla-timely-plugin
 ```
 
-Now import the 2 functions "openDittoTimely" and "closeDittoTimely".
-While calling "openDittoTimely" pass the eventName as the first param (mandatory) and the second param can be used to pass the utm_params (optional).
-"closeDittoTimely" needs no parameters.
+## Example
 
 ```
-import { openDittoTimely,closeDittoTimely } from 'vanilla-timely-plugin';
+import { openTimely,closeDittoTimely } from 'vanilla-timely-plugin';
 
 return (
 
-<button onClick={() => openDittoTimely("staging","test",{"campaign":"influencer-z"}) }>
+<button onClick={() => openTimely("staging","test",{"campaign":"collab-1"}) }>
 
 </button>
 
 )
 ```
+
+## Resources
+
+We are using Tingle.js for implementing the modal. (https://tingle.robinparisi.com)
