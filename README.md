@@ -1,5 +1,7 @@
 ## Vanilla JS Timely Modal
 
+We are using Tingle.js for implementing the modal. (https://tingle.robinparisi.com)
+
 In the index.js file we have a function 'openDittoTimely' this function is used to open the Ditto Timely Modal.
 To use this function first import it from the package and then call it in the handler function of the html element.
 There is also a function 'closeDittoTimely' to close the modal.

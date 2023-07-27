@@ -110,8 +110,6 @@ function createMessageListener() {
 }
 
 const modal = new Tingle.modal({
-  footer: false,
-  stickyFooter: false,
   closeMethods: ["button"], //"overlay", "button", "escape"
 });
 
