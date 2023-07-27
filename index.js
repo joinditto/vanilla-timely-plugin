@@ -88,18 +88,37 @@ const modal = new Tingle.modal({
   footer: false,
   stickyFooter: false,
   closeMethods: ["button"], //"overlay", "button", "escape"
-  //onOpen: function () {},
-  //onClose: function () {},
-  // beforeClose: function () {
-  //   const timelyIframe = window?.document?.getElementById("timely-iframe");
+  beforeClose: function () {
+    const timelyIframe = window?.document?.getElementById("timely-iframe");
 
-  //   if (timelyIframe) {
-  //     timelyIframe.contentWindow?.postMessage(
-  //       { from: "react-timely", action: "close" },
-  //       "*"
-  //     );
-  //   }
-  // },
+    if (timelyIframe) {
+      timelyIframe.contentWindow?.postMessage(
+        { from: "react-timely", action: "close" },
+        "*"
+      );
+    }
+
+    const p = new Promise((resolve, reject) => {
+      window.addEventListener("message", function (event) {
+        const { data } = event;
+        console.log("data", data);
+        if (data.from == "timely" && data.action === "confirm-close") {
+          resolve(true);
+        } else if (data.from == "timely" && data.action === "middle-steps") {
+          resolve(false);
+        }
+      });
+    });
+
+    p.then((a) => {
+      return a;
+    });
+
+    // .catch(() => {
+    //   console.log("inside catch");
+    //   return false;
+    // });
+  },
 });
 
 // Function to open the modal
@@ -108,7 +127,8 @@ export function openDittoTimely(eventName, params = {}, env = "prod") {
     console.error("Event Name is not available");
   }
 
-  const timelyUrlStaging = `https://test-timely.joinditto.in/event/${eventName}/book`;
+  const timelyUrlStaging = `http://localhost:3001/event/hotline/book`;
+  // const timelyUrlStaging = `https://test-timely.joinditto.in/event/${eventName}/book`;
   const timelyUrlProd = `https://timely.joinditto.in/event/${eventName}/book`;
 
   const timelyUrl = env === "prod" ? timelyUrlProd : timelyUrlStaging;
@@ -131,7 +151,6 @@ export function openDittoTimely(eventName, params = {}, env = "prod") {
   );
 
   modal.open();
-  //window.addEventListener("message", handleMessage, false);
 }
 
 // Function to close the modal
