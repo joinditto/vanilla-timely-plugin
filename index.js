@@ -1,7 +1,7 @@
 import Tingle from "tingle.js";
 
 //Function dynamically add the required CSS for the modal to the HEAD tag
-function addStylesToHead(css) {
+function timelyAddStylesToHead(css) {
   const styleElement = document.createElement("style");
   styleElement.textContent = css;
   document.head.appendChild(styleElement);
@@ -88,12 +88,13 @@ const cssStyles = `
 
 `;
 
-addStylesToHead(cssStyles);
+timelyAddStylesToHead(cssStyles);
 
 function timelyCreateMessageListener() {
   return new Promise((resolve) => {
     function listener(event) {
       const { data } = event;
+      console.log("data", data);
       if (data.from === "timely" && data.action === "confirm-close") {
         resolve(true);
       } else {
@@ -109,20 +110,24 @@ function timelyCreateMessageListener() {
 }
 
 const modal = new Tingle.modal({
-  closeMethods: ["button"], //"overlay", "button", "escape"
+  closeMethods: [],
 });
 
-async function timelyHandleCloseButtonClick() {
+function timelySendMessage() {
   const timelyIframe = window?.document?.getElementById("timely-iframe");
-
   if (timelyIframe) {
     timelyIframe.contentWindow?.postMessage(
       { from: "react-timely", action: "close" },
       "*"
     );
   }
+}
+
+async function timelyHandleCloseButtonClick() {
+  timelySendMessage();
 
   const closeModal = await timelyCreateMessageListener();
+
   if (closeModal) {
     modal.close();
     const closeButton = window.document.getElementById("close-button-timely");
@@ -130,8 +135,34 @@ async function timelyHandleCloseButtonClick() {
   }
 }
 
+async function timelyHandleEscapeKey(event) {
+  if (event.key === "Escape") {
+    timelySendMessage();
+
+    const closeModal = await timelyCreateMessageListener();
+    if (closeModal) {
+      modal.close();
+      removeEventListener("keydown", timelyHandleEscapeKey);
+    }
+  }
+}
+
+async function timelyOverlayClick(event) {
+  timelySendMessage();
+  const closeModal = await timelyCreateMessageListener();
+  if (closeModal) {
+    modal.close();
+    removeEventListener("click", timelyOverlayClick);
+  }
+}
+
 // Function to open the modal
-export function openTimely(eventName, params = {}, env = "prod") {
+export function openTimely(
+  eventName,
+  params = {},
+  env = "prod",
+  closeMethods = []
+) {
   if (!eventName) {
     console.error("vanilla-timely: Event name is not provided.");
     return;
@@ -161,13 +192,36 @@ export function openTimely(eventName, params = {}, env = "prod") {
     <button id="close-button-timely" class="custom-close-button-timely">
     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 15 15"><path fill="#FFFFFF" fill-rule="evenodd" d="M11.782 4.032a.575.575 0 1 0-.813-.814L7.5 6.687L4.032 3.218a.575.575 0 0 0-.814.814L6.687 7.5l-3.469 3.468a.575.575 0 0 0 .814.814L7.5 8.313l3.469 3.469a.575.575 0 0 0 .813-.814L8.313 7.5l3.469-3.468Z" clip-rule="evenodd"/></svg>
     </button>
-    <iframe id="timely-iframe" style="width: 100%;height:100%;border:none;" src="${timelyUrlWithParams}"></iframe>
+    <iframe id="timely-iframe"  style="width: 100%;height:100%;border:none;" src="${timelyUrlWithParams}"></iframe>
     <div>
     `
   );
 
-  const closeButton = window.document.getElementById("close-button-timely");
-  closeButton.addEventListener("click", timelyHandleCloseButtonClick);
+  if (closeMethods.length === 0) {
+    //If parameters are not passed we enable all the close methods.
+    const closeButton = window.document.getElementById("close-button-timely");
+    closeButton.addEventListener("click", timelyHandleCloseButtonClick);
+    document.addEventListener("keydown", timelyHandleEscapeKey);
+    document.addEventListener("click", timelyOverlayClick);
+  } else {
+    //Check for closeMethod param and enable only those.
+    if (closeMethods.includes("escape")) {
+      document.addEventListener("keydown", timelyHandleEscapeKey);
+    }
+
+    if (closeMethods.includes("overlay")) {
+      document.addEventListener("click", timelyOverlayClick);
+    }
+
+    if (closeMethods.includes("button")) {
+      const closeButton = window.document.getElementById("close-button-timely");
+      closeButton.addEventListener("click", timelyHandleCloseButtonClick);
+    } else {
+      //If button is not passed in closeMethods param then hide the close button.
+      const closeButton = window.document.getElementById("close-button-timely");
+      closeButton.style.display = "none";
+    }
+  }
 
   modal.open();
 }
