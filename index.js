@@ -7,7 +7,7 @@ function timelyAddStylesToHead(css) {
   document.head.appendChild(styleElement);
 }
 
-const cssStyles = `
+const timelyCssStyles = `
 .parent-container{
   height:100vh
 }
@@ -88,7 +88,7 @@ const cssStyles = `
 
 `;
 
-timelyAddStylesToHead(cssStyles);
+timelyAddStylesToHead(timelyCssStyles);
 
 function timelyCreateMessageListener() {
   return new Promise((resolve) => {
@@ -108,7 +108,7 @@ function timelyCreateMessageListener() {
   });
 }
 
-const modal = new Tingle.modal({
+const timelyModal = new Tingle.modal({
   closeMethods: [],
 });
 
@@ -128,7 +128,7 @@ async function timelyHandleCloseButtonClick() {
   const closeModal = await timelyCreateMessageListener();
 
   if (closeModal) {
-    modal.close();
+    timelyModal.close();
     const closeButton = window.document.getElementById("close-button-timely");
     closeButton.removeEventListener("click", timelyHandleCloseButtonClick);
   }
@@ -138,7 +138,7 @@ async function timelyOverlayClick() {
   timelySendMessage();
   const closeModal = await timelyCreateMessageListener();
   if (closeModal) {
-    modal.close();
+    timelyModal.close();
     removeEventListener("click", timelyOverlayClick);
   }
 }
@@ -147,8 +147,8 @@ async function timelyOverlayClick() {
 export function openTimely(
   eventName,
   params = {},
-  env = "prod",
-  closeMethods = []
+  closeMethods = [],
+  env = "prod"
 ) {
   if (!eventName) {
     console.error("vanilla-timely: Event name is not provided.");
@@ -173,7 +173,7 @@ export function openTimely(
     : timelyUrl;
 
   // set content
-  modal.setContent(
+  timelyModal.setContent(
     `
     <div class="parent-container">
     <button id="close-button-timely" class="custom-close-button-timely">
@@ -205,10 +205,10 @@ export function openTimely(
     }
   }
 
-  modal.open();
+  timelyModal.open();
 }
 
 // Function to close the modal
 export function closeTimely() {
-  modal.close();
+  timelyModal.close();
 }
