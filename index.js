@@ -1,14 +1,17 @@
 import Tingle from "tingle.js";
 
 //Function dynamically add the required CSS for the modal to the HEAD tag
-function addStylesToHead(css) {
+function timelyAddStylesToHead(css) {
   const styleElement = document.createElement("style");
   styleElement.textContent = css;
   document.head.appendChild(styleElement);
 }
 
-const cssStyles = `
-/* Your CSS styles go here */
+const timelyCssStyles = `
+.parent-container{
+  height:100vh
+}
+
 .tingle-modal {
   background-color: rgba(31, 31, 31, 0.4) !important;
   backdrop-filter: blur(1px) !important;
@@ -38,19 +41,22 @@ const cssStyles = `
 }
 
 .tingle-modal__close{
-  width:30px;
-  float:right;
-  position: relative;
-  right: 2%;
-  top: 2%;
-  color:white !important;
-  background: transparent;
-  border: none;
-  cursor:pointer;
+  display: none !important;
 }
 
 .tingle-modal__closeLabel {
   display: none !important;
+}
+
+.custom-close-button-timely{
+  position:fixed;
+  right:0px;
+  top:0px;
+  width:50px;
+  height:50px;
+  background:transparent;
+  border:none;
+  cursor:pointer;
 }
 
 
@@ -82,30 +88,71 @@ const cssStyles = `
 
 `;
 
-addStylesToHead(cssStyles);
+timelyAddStylesToHead(timelyCssStyles);
 
-const modal = new Tingle.modal({
-  footer: false,
-  stickyFooter: false,
-  closeMethods: ["button"], //"overlay", "button", "escape"
-  //onOpen: function () {},
-  //onClose: function () {},
-  // beforeClose: function () {
-  //   const timelyIframe = window?.document?.getElementById("timely-iframe");
+function timelyCreateMessageListener() {
+  return new Promise((resolve) => {
+    function listener(event) {
+      const { data } = event;
+      if (data.from === "timely" && data.action === "confirm-close") {
+        resolve(true);
+      } else {
+        resolve(false);
+      }
 
-  //   if (timelyIframe) {
-  //     timelyIframe.contentWindow?.postMessage(
-  //       { from: "react-timely", action: "close" },
-  //       "*"
-  //     );
-  //   }
-  // },
+      // After receiving a message, we don't need the listener anymore
+      window.removeEventListener("message", listener);
+    }
+
+    window.addEventListener("message", listener);
+  });
+}
+
+const timelyModal = new Tingle.modal({
+  closeMethods: [],
 });
 
+function timelySendMessage() {
+  const timelyIframe = window?.document?.getElementById("timely-iframe");
+  if (timelyIframe) {
+    timelyIframe.contentWindow?.postMessage(
+      { from: "react-timely", action: "close" },
+      "*"
+    );
+  }
+}
+
+async function timelyHandleCloseButtonClick() {
+  timelySendMessage();
+
+  const closeModal = await timelyCreateMessageListener();
+
+  if (closeModal) {
+    timelyModal.close();
+    const closeButton = window.document.getElementById("close-button-timely");
+    closeButton.removeEventListener("click", timelyHandleCloseButtonClick);
+  }
+}
+
+async function timelyOverlayClick() {
+  timelySendMessage();
+  const closeModal = await timelyCreateMessageListener();
+  if (closeModal) {
+    timelyModal.close();
+    removeEventListener("click", timelyOverlayClick);
+  }
+}
+
 // Function to open the modal
-export function openDittoTimely(eventName, params = {}, env = "prod") {
+export function openTimely(
+  eventName,
+  params = {},
+  closeMethods = [],
+  env = "prod"
+) {
   if (!eventName) {
-    console.error("Event Name is not available");
+    console.error("vanilla-timely: Event name is not provided.");
+    return;
   }
 
   const timelyUrlStaging = `https://test-timely.joinditto.in/event/${eventName}/book`;
@@ -126,15 +173,42 @@ export function openDittoTimely(eventName, params = {}, env = "prod") {
     : timelyUrl;
 
   // set content
-  modal.setContent(
-    `<iframe id="timely-iframe" style="width: 100%;height:100%;border:none;" src="${timelyUrlWithParams}"></iframe>`
+  timelyModal.setContent(
+    `
+    <div class="parent-container">
+    <button id="close-button-timely" class="custom-close-button-timely">
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 15 15"><path fill="#FFFFFF" fill-rule="evenodd" d="M11.782 4.032a.575.575 0 1 0-.813-.814L7.5 6.687L4.032 3.218a.575.575 0 0 0-.814.814L6.687 7.5l-3.469 3.468a.575.575 0 0 0 .814.814L7.5 8.313l3.469 3.469a.575.575 0 0 0 .813-.814L8.313 7.5l3.469-3.468Z" clip-rule="evenodd"/></svg>
+    </button>
+    <iframe id="timely-iframe"  style="width: 100%;height:100%;border:none;" src="${timelyUrlWithParams}"></iframe>
+    <div>
+    `
   );
 
-  modal.open();
-  //window.addEventListener("message", handleMessage, false);
+  if (closeMethods.length === 0) {
+    //If parameters are not passed we enable all the close methods.
+    const closeButton = window.document.getElementById("close-button-timely");
+    closeButton.addEventListener("click", timelyHandleCloseButtonClick);
+    document.addEventListener("click", timelyOverlayClick);
+  } else {
+    //Check for closeMethod param and enable only those.
+    if (closeMethods.includes("overlay")) {
+      document.addEventListener("click", timelyOverlayClick);
+    }
+
+    if (closeMethods.includes("button")) {
+      const closeButton = window.document.getElementById("close-button-timely");
+      closeButton.addEventListener("click", timelyHandleCloseButtonClick);
+    } else {
+      //If button is not passed in closeMethods param then hide the close button.
+      const closeButton = window.document.getElementById("close-button-timely");
+      closeButton.style.display = "none";
+    }
+  }
+
+  timelyModal.open();
 }
 
 // Function to close the modal
-export function closeDittoTimely() {
-  modal.close();
+export function closeTimely() {
+  timelyModal.close();
 }

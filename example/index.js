@@ -1,7 +1,7 @@
-import { openDittoTimely } from "vanilla-timely-plugin";
+import { openTimely } from "vanilla-timely-plugin";
 
 function openModal() {
-  openDittoTimely("test", { campaign: "akshat", trend: "number1" }, "staging");
+  openTimely("test", { campaign: "akshat", trend: "number1" }, [], "staging");
 }
 
 window.openModal = openModal;
