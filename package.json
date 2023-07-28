@@ -1,18 +1,10 @@
 {
-  "name": "vanilla-timely-plugin",
+  "name": "vanilla-timely",
   "version": "1.0.0",
-  "description": "Load Vanilla JS Timely Modal plugin from any site",
+  "description": "Load vanilla JS Timely Modal from any site",
   "author": "joinditto",
   "license": "MIT",
-  "repository": "/vanilla-timely-plugin",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "bugs": {
-    "url": "https://github.com/joinditto/vanilla-timely-plugin/issues"
-  },
-  "homepage": "https://github.com/joinditto/vanilla-timely-plugin#readme",
   "dependencies": {
     "tingle.js": "^0.16.0"
   }
