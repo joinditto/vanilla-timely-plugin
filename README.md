@@ -13,10 +13,10 @@ The `openTimely` function takes 4 parameters.
 
 2.`params` is an optional field. It is an object, which can be used to send the **utm_params** and any other params which is mutually agreed with Ditto tech team.
 
-3. `closeMethods` is an optional field.It is an array of strings with possible values as "overlay" or "button".
-   By default all the 2 methods are enabled.If you want only certain close methods pass only those.
-   "button" - Modal is closed on clicking close button.
-   "overlay" -Modal is closed on clicking the overlay.
+3.`closeMethods` is an optional field.It is an array of strings with possible values as **overlay** or **button**.
+By default all the 2 methods are enabled.If you want only certain close methods pass only those.
+**button** - Modal is closed on clicking close button.
+**overlay** -Modal is closed on clicking the overlay.
 
 4.`env` which is used specify the timely server (prod/staging).It would be a string value.The values can be either **prod** or **staging**. By default it is set to **prod**.
 
