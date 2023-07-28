@@ -134,18 +134,6 @@ async function timelyHandleCloseButtonClick() {
   }
 }
 
-async function timelyHandleEscapeKey(event) {
-  if (event.key === "Escape") {
-    timelySendMessage();
-
-    const closeModal = await timelyCreateMessageListener();
-    if (closeModal) {
-      modal.close();
-      removeEventListener("keydown", timelyHandleEscapeKey);
-    }
-  }
-}
-
 async function timelyOverlayClick() {
   timelySendMessage();
   const closeModal = await timelyCreateMessageListener();
@@ -200,14 +188,9 @@ export function openTimely(
     //If parameters are not passed we enable all the close methods.
     const closeButton = window.document.getElementById("close-button-timely");
     closeButton.addEventListener("click", timelyHandleCloseButtonClick);
-    document.addEventListener("keydown", timelyHandleEscapeKey);
     document.addEventListener("click", timelyOverlayClick);
   } else {
     //Check for closeMethod param and enable only those.
-    if (closeMethods.includes("escape")) {
-      document.addEventListener("keydown", timelyHandleEscapeKey);
-    }
-
     if (closeMethods.includes("overlay")) {
       document.addEventListener("click", timelyOverlayClick);
     }
