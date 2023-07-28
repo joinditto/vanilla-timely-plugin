@@ -94,7 +94,6 @@ function timelyCreateMessageListener() {
   return new Promise((resolve) => {
     function listener(event) {
       const { data } = event;
-      console.log("data", data);
       if (data.from === "timely" && data.action === "confirm-close") {
         resolve(true);
       } else {
@@ -147,7 +146,7 @@ async function timelyHandleEscapeKey(event) {
   }
 }
 
-async function timelyOverlayClick(event) {
+async function timelyOverlayClick() {
   timelySendMessage();
   const closeModal = await timelyCreateMessageListener();
   if (closeModal) {
