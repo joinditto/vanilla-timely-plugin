@@ -44,16 +44,23 @@ npm install vanilla-timely-plugin
 
 ## Example
 
+**Javascript**
 ```
-import { openTimely,closeDittoTimely } from 'vanilla-timely-plugin';
+import { openTimely,closeDittoTimely } from 'vanilla-timely-plugin'; 
 
-return (
+function openModal(){
+ openTimely("event-test",{"utm_param":"influencer"},[],"staging")
+}
 
-<button onClick={() => openTimely("staging","test",{"campaign":"collab-1"}) }>
+function closeModal(){
+ closeDittoTimely ();
+}
 
-</button>
-
-)
+```
+**HTML**
+```
+<button onclick="openModal()">Open Modal</button>
+<button onclick="closeModal()">Close Modal</button>
 ```
 
 ## Resources
