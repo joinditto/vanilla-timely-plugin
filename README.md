@@ -39,14 +39,14 @@ utm_term
 ## Installing
 
 ```
-npm install vanilla-timely-plugin
+npm install vanilla-timely
 ```
 
 ## Example
 
 **Javascript**
 ```
-import { openTimely,closeDittoTimely } from 'vanilla-timely-plugin'; 
+import { openTimely,closeDittoTimely } from 'vanilla-timely'; 
 
 function openModal(){
  openTimely("event-test",{"utm_param":"influencer"},[],"staging")
