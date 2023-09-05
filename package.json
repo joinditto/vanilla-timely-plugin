@@ -1,5 +1,5 @@
 {
-  "name": "vanilla-timely",
+  "name": "@ditto-insurance/vanilla-timely",
   "version": "1.0.0",
   "description": "Load Ditto Insurance's timely slot booking application in a modal from any website",
   "author": "joinditto",
@@ -7,5 +7,8 @@
   "main": "index.js",
   "dependencies": {
     "tingle.js": "^0.16.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
