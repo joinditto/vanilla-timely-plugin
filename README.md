@@ -47,14 +47,14 @@ npm i @ditto-insurance/vanilla-timely
 **Javascript**
 
 ```
-import { openTimely,closeDittoTimely } from '@ditto-insurance/vanilla-timely';
+import { openTimely,closeTimely } from '@ditto-insurance/vanilla-timely';
 
 function openModal(){
  openTimely("event-test",{"utm_param":"influencer"},[],"staging")
 }
 
 function closeModal(){
- closeDittoTimely ();
+ closeTimely ();
 }
 
 ```
