@@ -39,14 +39,15 @@ utm_term
 ## Installing
 
 ```
-npm install vanilla-timely
+npm i @ditto-insurance/vanilla-timely
 ```
 
 ## Example
 
 **Javascript**
+
 ```
-import { openTimely,closeDittoTimely } from 'vanilla-timely'; 
+import { openTimely,closeDittoTimely } from '@ditto-insurance/vanilla-timely';
 
 function openModal(){
  openTimely("event-test",{"utm_param":"influencer"},[],"staging")
@@ -57,7 +58,9 @@ function closeModal(){
 }
 
 ```
+
 **HTML**
+
 ```
 <button onclick="openModal()">Open Modal</button>
 <button onclick="closeModal()">Close Modal</button>
