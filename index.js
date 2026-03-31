@@ -1,6 +1,5 @@
-import Tingle from "tingle.js";
+// --- CSS (matches react-timely-plugin's TimelyModal.tsx) ---
 
-//Function dynamically add the required CSS for the modal to the HEAD tag
 function timelyAddStylesToHead(css) {
   const styleElement = document.createElement("style");
   styleElement.textContent = css;
@@ -8,142 +7,99 @@ function timelyAddStylesToHead(css) {
 }
 
 const timelyCssStyles = `
-.parent-container{
-  height:100vh
+/* overlay */
+.timely-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999999999;
+  background-color: rgba(31,31,31,0.4);
+  display: none;
 }
 
-.tingle-modal {
-  background-color: rgba(31, 31, 31, 0.4) !important;
-  backdrop-filter: blur(1px) !important;
-  position:absolute !important;
-  top: 0% !important;
-  left: 0% !important;
-  z-index: 999999999 !important;
-  width: 100% !important;
-  height: 100vh !important;
+.timely-overlay--visible {
+  display: block;
 }
 
-.tingle-modal-box {
-  margin-top:25px;
-  display: flex;
-  justify-content: center;
-  width: 100% !important;
-  height:100% !important
+/* lock page scroll when modal is open */
+html.timely-open,
+html.timely-open body {
+  overflow: hidden !important;
+  height: 100% !important;
 }
 
-.tingle-modal-box__content {
-  padding: 0px !important;
-  width:980px !important
+/* desktop: >=960px (matches react-timely Md) */
+.timely-iframe {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateX(calc(-50% - 2px)) translateY(calc(-50% - 2px));
+  width: 80%;
+  min-width: 900px;
+  max-width: 1060px;
+  height: 85vh;
+  border: none;
+  background: transparent;
 }
 
-.tingle-enabled{
-  overflow:hidden
+/* tablet: 768-959px (matches react-timely Sm) */
+@media (max-width: 959px) {
+  .timely-iframe {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    transform: none;
+    width: 100%;
+    min-width: 0;
+    max-width: 660px;
+    max-height: none;
+    height: auto;
+    margin: auto;
+    inset: 50px 0px;
+  }
 }
 
-.tingle-modal__close{
-  display: none !important;
-}
-
-.tingle-modal__closeLabel {
-  display: none !important;
-}
-
-.custom-close-button-timely{
-  position:fixed;
-  right:0px;
-  top:0px;
-  width:50px;
-  height:50px;
-  background:transparent;
-  border:none;
-  cursor:pointer;
-}
-
-
-@media (max-width: 980px) {
-  .tingle-modal-box {
-    width: 100% !important;
-    margin-bottom: inherit !important;
-    height: 695px !important;
+/* mobile: <768px - bottom sheet */
+@media (max-width: 767px) {
+  .timely-iframe {
     position: absolute;
-    bottom: 0px;
+    top: auto;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    transform: none;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    height: 85vh;
+    margin: 0;
   }
 }
-
- @media (max-height: 668px) {
-  .tingle-modal-box {
-    height: 575px !important;
-  }
-}
-
-.tingle-modal__close svg * {
-  fill: currentColor;
-}
-
-@media (max-width: 540px) {
-  .tingle-modal {
-    bottom:0px !important
-  }  
-}
-
 `;
 
 timelyAddStylesToHead(timelyCssStyles);
 
-function timelyCreateMessageListener() {
-  return new Promise((resolve) => {
-    function listener(event) {
-      const { data } = event;
-      if (data.from === "timely" && data.action === "confirm-close") {
-        resolve(true);
-      } else {
-        resolve(false);
-      }
+// --- Modal DOM ---
 
-      // After receiving a message, we don't need the listener anymore
-      window.removeEventListener("message", listener);
-    }
+const timelyOverlay = document.createElement("div");
+timelyOverlay.className = "timely-overlay";
+document.body.appendChild(timelyOverlay);
 
-    window.addEventListener("message", listener);
-  });
-}
+// --- Helpers ---
 
-const timelyModal = new Tingle.modal({
-  closeMethods: [],
-});
-
-function timelySendMessage() {
-  const timelyIframe = window?.document?.getElementById("timely-iframe");
-  if (timelyIframe) {
-    timelyIframe.contentWindow?.postMessage(
-      { from: "react-timely", action: "close" },
-      "*"
-    );
+// The iframe's Timely page sends a postMessage to confirm close
+function timelyMessageListener(event) {
+  const { data } = event;
+  if (data.from === "timely" && data.action === "confirm-close") {
+    closeTimely();
   }
 }
 
-async function timelyHandleCloseButtonClick() {
-  timelySendMessage();
+// --- Public API ---
 
-  const closeModal = await timelyCreateMessageListener();
-
-  if (closeModal) {
-    timelyModal.close();
-    const closeButton = window.document.getElementById("close-button-timely");
-    closeButton.removeEventListener("click", timelyHandleCloseButtonClick);
-  }
-}
-
-async function timelyOverlayClick() {
-  timelySendMessage();
-  const closeModal = await timelyCreateMessageListener();
-  if (closeModal) {
-    timelyModal.close();
-    removeEventListener("click", timelyOverlayClick);
-  }
-}
-
-// Function to open the modal
 export function openTimely(
   eventName,
   params = {},
@@ -157,58 +113,39 @@ export function openTimely(
 
   const timelyUrlStaging = `https://test-timely.joinditto.in/event/${eventName}/book`;
   const timelyUrlProd = `https://timely.joinditto.in/event/${eventName}/book`;
-
   const timelyUrl = env === "prod" ? timelyUrlProd : timelyUrlStaging;
 
-  // Convert params object into URL query parameters
-  const utmParamsString = Object.entries(params)
+  // Combine UTM params with embed params (so iframe shows its own close button)
+  const allParams = {
+    ...params,
+    embed_type: "popup",
+    embed_domain: window.location.host,
+    embed_path: window.location.pathname,
+  };
+
+  const queryString = Object.entries(allParams)
     .map(
       ([key, value]) =>
         `${encodeURIComponent(key)}=${encodeURIComponent(value)}`
     )
     .join("&");
 
-  const timelyUrlWithParams = utmParamsString
-    ? `${timelyUrl}?${utmParamsString}`
-    : timelyUrl;
+  const timelyUrlWithParams = `${timelyUrl}?${queryString}`;
 
-  // set content
-  timelyModal.setContent(
-    `
-    <div class="parent-container">
-    <button id="close-button-timely" class="custom-close-button-timely">
-    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 15 15"><path fill="#FFFFFF" fill-rule="evenodd" d="M11.782 4.032a.575.575 0 1 0-.813-.814L7.5 6.687L4.032 3.218a.575.575 0 0 0-.814.814L6.687 7.5l-3.469 3.468a.575.575 0 0 0 .814.814L7.5 8.313l3.469 3.469a.575.575 0 0 0 .813-.814L8.313 7.5l3.469-3.468Z" clip-rule="evenodd"/></svg>
-    </button>
-    <iframe id="timely-iframe"  style="width: 100%;height:100%;border:none;" src="${timelyUrlWithParams}"></iframe>
-    <div>
-    `
-  );
+  timelyOverlay.innerHTML = `
+    <iframe id="timely-iframe" class="timely-iframe" src="${timelyUrlWithParams}"></iframe>
+  `;
 
-  if (closeMethods.length === 0) {
-    //If parameters are not passed we enable all the close methods.
-    const closeButton = window.document.getElementById("close-button-timely");
-    closeButton.addEventListener("click", timelyHandleCloseButtonClick);
-    document.addEventListener("click", timelyOverlayClick);
-  } else {
-    //Check for closeMethod param and enable only those.
-    if (closeMethods.includes("overlay")) {
-      document.addEventListener("click", timelyOverlayClick);
-    }
+  // Listen for close message from iframe
+  window.addEventListener("message", timelyMessageListener);
 
-    if (closeMethods.includes("button")) {
-      const closeButton = window.document.getElementById("close-button-timely");
-      closeButton.addEventListener("click", timelyHandleCloseButtonClick);
-    } else {
-      //If button is not passed in closeMethods param then hide the close button.
-      const closeButton = window.document.getElementById("close-button-timely");
-      closeButton.style.display = "none";
-    }
-  }
-
-  timelyModal.open();
+  // Show
+  timelyOverlay.classList.add("timely-overlay--visible");
+  document.documentElement.classList.add("timely-open");
 }
 
-// Function to close the modal
 export function closeTimely() {
-  timelyModal.close();
+  timelyOverlay.classList.remove("timely-overlay--visible");
+  document.documentElement.classList.remove("timely-open");
+  window.removeEventListener("message", timelyMessageListener);
 }
