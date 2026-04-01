@@ -1,6 +1,6 @@
 {
   "name": "@ditto-insurance/vanilla-timely",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "description": "Load Ditto Insurance's timely slot booking application in a modal from any website",
   "author": "joinditto",
   "license": "MIT",

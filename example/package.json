@@ -8,7 +8,7 @@
   "repository": "",
   "main": "index.js",
   "dependencies": {
-    "vanilla-timely-plugin": "file:.."
+    "@ditto-insurance/vanilla-timely": "file:.."
   },
   "devDependencies": {
     "parcel-bundler": "^1.12.5"
