@@ -1,5 +1,3 @@
-// --- CSS (matches react-timely-plugin's TimelyModal.tsx) ---
-
 function timelyAddStylesToHead(css) {
   const styleElement = document.createElement("style");
   styleElement.textContent = css;
@@ -114,15 +112,38 @@ const timelyLoaderSvg = `<svg xmlns="http://www.w3.org/2000/svg" style="margin:a
 
 // --- Modal DOM ---
 
-const timelyOverlay = document.createElement("div");
-timelyOverlay.className = "timely-overlay";
-document.body.appendChild(timelyOverlay);
+// The overlay is created lazily on first open so that simply importing this
+// module never touches document.body (which may not exist yet if the script
+// is loaded in <head>).
+let timelyOverlay = null;
+
+function timelyGetOverlay() {
+  if (!timelyOverlay) {
+    timelyOverlay = document.createElement("div");
+    timelyOverlay.className = "timely-overlay";
+    document.body.appendChild(timelyOverlay);
+  }
+  return timelyOverlay;
+}
 
 // --- Helpers ---
 
+// Origins the Timely iframe is served from. Close messages from any other
+// origin/source are ignored so arbitrary scripts on the host page can't
+// force the modal closed.
+const TIMELY_ALLOWED_ORIGINS = [
+  "https://timely.joinditto.in",
+  "https://test-timely.joinditto.in",
+];
+
 function timelyMessageListener(event) {
+  if (!TIMELY_ALLOWED_ORIGINS.includes(event.origin)) return;
+
+  const iframe = document.getElementById("timely-iframe");
+  if (!iframe || event.source !== iframe.contentWindow) return;
+
   const { data } = event;
-  if (data.from === "timely" && data.action === "confirm-close") {
+  if (data && data.from === "timely" && data.action === "confirm-close") {
     closeTimely();
   }
 }
@@ -150,8 +171,9 @@ export function openTimely(
     return;
   }
 
-  const timelyUrlStaging = `https://test-timely.joinditto.in/event/${eventName}/book`;
-  const timelyUrlProd = `https://timely.joinditto.in/event/${eventName}/book`;
+  const encodedEventName = encodeURIComponent(eventName);
+  const timelyUrlStaging = `https://test-timely.joinditto.in/event/${encodedEventName}/book`;
+  const timelyUrlProd = `https://timely.joinditto.in/event/${encodedEventName}/book`;
   const timelyUrl = env === "prod" ? timelyUrlProd : timelyUrlStaging;
 
   // Extract embed and prefill from options, with defaults
@@ -189,7 +211,8 @@ export function openTimely(
   const timelyUrlWithParams = `${timelyUrl}?${queryString}`;
 
   // Build DOM elements instead of innerHTML to avoid XSS via interpolated URLs
-  timelyOverlay.innerHTML = "";
+  const overlay = timelyGetOverlay();
+  overlay.innerHTML = "";
 
   const loader = document.createElement("div");
   loader.className = "timely-loader-wrap";
@@ -202,8 +225,8 @@ export function openTimely(
   iframeEl.src = timelyUrlWithParams;
   iframeEl.title = "Ditto Timely";
 
-  timelyOverlay.appendChild(loader);
-  timelyOverlay.appendChild(iframeEl);
+  overlay.appendChild(loader);
+  overlay.appendChild(iframeEl);
 
   // When iframe loads, hide loader and show iframe
   iframeEl.addEventListener("load", function onLoad() {
@@ -216,7 +239,7 @@ export function openTimely(
   window.addEventListener("message", timelyMessageListener);
 
   // Show
-  timelyOverlay.classList.add("timely-overlay--visible");
+  overlay.classList.add("timely-overlay--visible");
   document.documentElement.classList.add("timely-open");
 }
 
@@ -225,13 +248,15 @@ export function closeTimely() {
   const iframe = document.getElementById("timely-iframe");
   if (iframe && iframe.contentWindow) {
     iframe.contentWindow.postMessage(
-      { from: "vanilla-timely", action: "close" },
+      { from: "react-timely", action: "close" },
       "*"
     );
   }
 
-  timelyOverlay.classList.remove("timely-overlay--visible");
+  if (timelyOverlay) {
+    timelyOverlay.classList.remove("timely-overlay--visible");
+    timelyOverlay.innerHTML = "";
+  }
   document.documentElement.classList.remove("timely-open");
-  timelyOverlay.innerHTML = "";
   window.removeEventListener("message", timelyMessageListener);
 }

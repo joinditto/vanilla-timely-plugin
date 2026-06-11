@@ -1,12 +1,17 @@
 {
   "name": "@ditto-insurance/vanilla-timely",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Load Ditto Insurance's timely slot booking application in a modal from any website",
   "author": "joinditto",
   "license": "MIT",
   "main": "index.js",
+  "files": [
+    "index.js",
+    "dist"
+  ],
   "scripts": {
-    "build:iife": "esbuild index.js --bundle --format=iife --global-name=DittoTimely --outfile=dist/vanilla-timely.iife.js --minify"
+    "build:iife": "esbuild index.js --bundle --format=iife --global-name=DittoTimely --outfile=dist/vanilla-timely.iife.js --minify",
+    "prepublishOnly": "yarn build:iife"
   },
   "publishConfig": {
     "access": "public"
