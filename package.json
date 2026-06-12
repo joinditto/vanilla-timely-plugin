@@ -11,7 +11,7 @@
   ],
   "scripts": {
     "build:iife": "esbuild index.js --bundle --format=iife --global-name=DittoTimely --outfile=dist/vanilla-timely.iife.js --minify",
-    "prepublishOnly": "yarn build:iife"
+    "prepublishOnly": "npm run build:iife"
   },
   "publishConfig": {
     "access": "public"
